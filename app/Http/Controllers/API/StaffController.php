@@ -28,7 +28,6 @@ class StaffController extends BaseController
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-    
     public function store(Request $request): JsonResponse
     {
         $input = $request->all();
@@ -37,22 +36,31 @@ class StaffController extends BaseController
             'surname' => 'required|string',
             'other_names' => 'required|string',
             'date_of_birth' => 'required|date',
-            'src' => 'nullable',
-            'mime_type' => 'nullable',
-            'alt' => 'nullable'
+            'image_src' => 'nullable|image:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
-        $staff = Staff::create($input);
 
+        $staff = Staff::create($input);
         $unique_code = mt_rand(1000000000, 9999999999);
         $staff->unique_code = $unique_code;
+
+        if($request->hasFile('image_src')) {
+            $filename = $request->file('image_src')->getClientOriginalName(); 
+            $getFileNameWitouText = pathinfo($filename, PATHINFO_FILENAME);
+            $getFileExtension = $request->file('image_src')->getClientOriginalExtension(); 
+            $createNewFileName = time() . '_' . str_replace(' ', '_', $getFileNameWitouText) . '.' . $getFileExtension;
+            $img_path = $request->file('image_src')->move('storage/images', $createNewFileName);
+            $staff->image_src = $createNewFileName; 
+        }
+
         $staff->save();
 
         return $this->sendResponse(new StaffResource($staff), 'Staff created successfully.');
     } 
+
     /**
     * Display the specified resource.
     *
@@ -83,10 +91,7 @@ class StaffController extends BaseController
         $input = $request->all();
         $validator = Validator::make($input, [
             'unique_code' => 'nullable',
-            'date_of_birth' => 'required',
-            'src' => 'nullable',
-            'mime_type' => 'nullable',
-            'alt' => 'nullable'
+            'date_of_birth' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -94,22 +99,57 @@ class StaffController extends BaseController
         }
 
         if (!empty($input['unique_code'])) {
-            if ($input['unique_code'] == $staff->unique_code) {
+            if (!$staff->is_verified && $input['unique_code'] == $staff->unique_code) {
                 $staff->is_verified = true;
-            } if ($input['unique_code'] == $staff->unique_code && $staff->is_verified) {
+                $staff->employee_number = 'EN-' . mt_rand(1000, 9999);
+                $staff->save();
+            } elseif ($staff->is_verified && $input['unique_code'] == $staff->unique_code) {
                 return $this->sendError('Your are already verified.');
-            } else {
+            } elseif($input['unique_code'] != $staff->unique_code) {
                 return $this->sendError('Wrong Code.'); 
             }
         }
-        $staff->date_of_birth = $input['date_of_birth'];
-        $staff->src = $input['src'];
-        $staff->mime_type = $input['mime_type'];
-        $staff->alt = $input['alt'];
-        $staff->employee_number = 'EN-' . mt_rand(1000, 9999);
+
+        if (!empty($input['date_of_birth'])) {
+            $staff->date_of_birth = $input['date_of_birth'];
+        }
+
         $staff->save();
-        
+
         return $this->sendResponse(new StaffResource($staff), 'Staff updated successfully.');
+    }
+
+    /**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+    public function imageUpload(Request $request, $id): JsonResponse
+    {
+        $staff = Staff::find($id);
+        $validatedData = Validator::make($request->all(), [
+            'image_src' => 'required|mimes:jpg,jpeg,png|max:3048',
+        ]);
+        
+        if ($validatedData->fails()) {
+            return Response::json(['success' => false, 'message' => $validatedData->errors()], 400);
+        }
+        
+        if($request->hasFile('image_src')) {
+            $filename = $request->file('image_src')->getClientOriginalName(); 
+            $getFileNameWitouText = pathinfo($filename, PATHINFO_FILENAME);
+            $getFileExtension = $request->file('image_src')->getClientOriginalExtension(); 
+            $createNewFileName = time() . '_' . str_replace(' ', '_', $getFileNameWitouText) . '.' . $getFileExtension;
+            $img_path = $request->file('image_src')->move('storage/images', $createNewFileName);
+            $staff->image_src = $createNewFileName; 
+        }
+
+        if ($staff->save()) {
+            return $this->sendResponse(new StaffResource($staff), 'Staff Image Updated Successfully.');
+        } else {
+            return $this->sendError('Image Not Successfully Uploded'); 
+        }
     }
 
     /**

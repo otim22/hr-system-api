@@ -25,8 +25,6 @@ class Staff extends Model
         'surname', 
         'other_names', 
         'date_of_birth', 
-        'src', 
-        'mime_type', 
-        'alt'
+        'image_src', 
     ];
 }

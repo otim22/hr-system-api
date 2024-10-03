@@ -22,9 +22,7 @@ class StaffResource extends JsonResource
             'unique_code' => $this->unique_code,
             'employee_number' => $this->employee_number,
             'is_verified' => $this->is_verified,
-            'src' => $this->src,
-            'mime_type' => $this->mime_type,
-            'alt' => $this->alt,
+            'image_src' => $this->image_src,
         ];
     }
 }

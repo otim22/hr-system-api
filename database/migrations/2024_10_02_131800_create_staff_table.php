@@ -19,9 +19,7 @@ return new class extends Migration
             $table->boolean('is_verified')->default(0);
             $table->string('unique_code')->nullable();
             $table->string('employee_number')->nullable();
-            $table->string('src')->nullable();
-            $table->string('mime_type')->nullable();
-            $table->string('alt')->nullable();
+            $table->string('image_src')->nullable();
             $table->timestamps();
         });
     }
