@@ -61,9 +61,9 @@ You can now access the server at http://localhost:8000
     
     php artisan serve
 
-***Note*** : It's recommended to have a clean database before seeding. You can refresh your migrations at any point to clean the database by running the following command
+<!-- ***Note*** : It's recommended to have a clean database before seeding. You can refresh your migrations at any point to clean the database by running the following command
 
-    php artisan migrate:refresh
+    php artisan migrate:refresh -->
     
 The api can be accessed at [http://localhost:8000/api](http://localhost:8000).
 
