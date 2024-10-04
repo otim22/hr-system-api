@@ -12,21 +12,80 @@ use App\Http\Controllers\API\BaseController as BaseController;
 class StaffController extends BaseController
 {
     /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
+    * @OA\Get(
+    *     path="/api/staff",
+    *     operationId="getStaff",
+    *     tags={"Get all staff"},
+    *     summary="Get all staff",
+    *     description="Get all staff Endpoint",
+    *     @OA\RequestBody(
+    *         @OA\JsonContent(),
+    *     ),
+    *     @OA\Response(
+    *       response="200",
+    *       description="Staff Retrieved Successfully",
+    *       @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="422",
+    *         description="Unprocessable Entity",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Bad Request",
+    *         @OA\JsonContent()
+    *     ),
+    * )
     */
     public function index(): JsonResponse
     {
         $staff = Staff::all();
-        return $this->sendResponse(StaffResource::collection($staff), 'Staff retrieved successfully.');
+        return $this->sendResponse(StaffResource::collection($staff), 'Staff Retrieved Successfully.');
     }
 
     /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
+    * @OA\Post(
+    *     path="/api/staff",
+    *     operationId="registerStaff",
+    *     tags={"Register staff"},
+    *     summary="creates new staff",
+    *     description="Staff Registration Endpoint",
+    *     @OA\RequestBody(
+    *         @OA\JsonContent(),
+    *         @OA\MediaType(
+    *             mediaType="multipart/form-data",
+    *             @OA\Schema(
+    *                 type="object",
+    *                 required={"surname","other_names","date_of_birth"},
+    *                 @OA\Property(property="surname",type="text"),
+    *                 @OA\Property(property="other_names",type="text"),
+    *                 @OA\Property(property="date_of_birth",type="date"),
+    *                 @OA\Property(property="image_src",type="text"),
+    *             ),
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="201",
+    *         description="Staff Registered Successfully",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *       response="200",
+    *       description="Registered Successfull",
+    *       @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="422",
+    *         description="Unprocessable Entity",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Bad Request",
+    *         @OA\JsonContent()
+    *     ),
+    * )
     */
     public function store(Request $request): JsonResponse
     {
@@ -62,12 +121,40 @@ class StaffController extends BaseController
     } 
 
     /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
+    * @OA\Get(
+    *     path="/api/staff/{id}",
+    *     operationId="getStaffById",
+    *     tags={"Get specific staff"},
+    *     summary="Get staff by id",
+    *     description="Get staff by id Endpoint",
+    *     @OA\RequestBody(
+    *         @OA\JsonContent(),
+    *         @OA\MediaType(
+    *             mediaType="multipart/form-data",
+    *             @OA\Schema(
+    *                 type="object",
+    *                 required={"id"},
+    *                 @OA\Property(property="id",type="string"),
+    *             ),
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *       response="200",
+    *       description="Staff Retrieved Successfully",
+    *       @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="422",
+    *         description="Unprocessable Entity",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Bad Request",
+    *         @OA\JsonContent()
+    *     ),
+    * )
     */
-    
     public function show($id): JsonResponse
     {
         $staff = Staff::find($id);
@@ -80,11 +167,40 @@ class StaffController extends BaseController
     }
 
     /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
+    * @OA\Put(
+    *     path="/api/staff/{staff}",
+    *     operationId="updateStaff",
+    *     tags={"Update staff"},
+    *     summary="Update staff details",
+    *     description="Update staff Endpoint",
+    *     @OA\RequestBody(
+    *         @OA\JsonContent(),
+    *         @OA\MediaType(
+    *             mediaType="multipart/form-data",
+    *             @OA\Schema(
+    *                 type="object",
+    *                 required={"date_of_birth"},
+    *                 @OA\Property(property="date_of_birth",type="date"),
+    *                 @OA\Property(property="image_src",type="text"),
+    *             ),
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *       response="200",
+    *       description="Staff Updated Successfully",
+    *       @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="422",
+    *         description="Unprocessable Entity",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Bad Request",
+    *         @OA\JsonContent()
+    *     ),
+    * )
     */
     public function update(Request $request, Staff $staff): JsonResponse
     {
@@ -120,10 +236,39 @@ class StaffController extends BaseController
     }
 
     /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
+    * @OA\Post(
+    *     path="/api/imageUpload/{id}",
+    *     operationId="updateStaffImageById",
+    *     tags={"Update staff image"},
+    *     summary="Update staff image by id",
+    *     description="Get staff image by id Endpoint",
+    *     @OA\RequestBody(
+    *         @OA\JsonContent(),
+    *         @OA\MediaType(
+    *             mediaType="multipart/form-data",
+    *             @OA\Schema(
+    *                 type="object",
+    *                 required={"id"},
+    *                 @OA\Property(property="id",type="string"),
+    *             ),
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *       response="200",
+    *       description="Staff Image Updated Successfully",
+    *       @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="422",
+    *         description="Unprocessable Entity",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Bad Request",
+    *         @OA\JsonContent()
+    *     ),
+    * )
     */
     public function imageUpload(Request $request, $id): JsonResponse
     {
@@ -153,10 +298,39 @@ class StaffController extends BaseController
     }
 
     /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
+    * @OA\Delete(
+    *     path="/api/staff/{staff}",
+    *     operationId="deleteStaffByObject",
+    *     tags={"Delete staff"},
+    *     summary="Delete staff by object",
+    *     description="Deletes staff by object Endpoint",
+    *     @OA\RequestBody(
+    *         @OA\JsonContent(),
+    *         @OA\MediaType(
+    *             mediaType="multipart/form-data",
+    *             @OA\Schema(
+    *                 type="object",
+    *                 required={"staff"},
+    *                 @OA\Property(property="staff",type="string"),
+    *             ),
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *       response="200",
+    *       description="Staff deleted Successfully",
+    *       @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="422",
+    *         description="Unprocessable Entity",
+    *         @OA\JsonContent()
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Bad Request",
+    *         @OA\JsonContent()
+    *     ),
+    * )
     */
     public function destroy(Staff $staff): JsonResponse
     {
