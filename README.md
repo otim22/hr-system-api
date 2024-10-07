@@ -89,7 +89,7 @@ The api can be accessed at [http://localhost:8000/api](http://localhost:8000).
 
 ## Environment variables
 
-- `.env` - Environment variables can be set in this file
+- `.env` - Environment variables can be set in this file including database setup
 
 ***Note*** : You can quickly set the database information and other variables in this file and have the application fully working.
 
@@ -124,7 +124,14 @@ Find an invite to Postman below and test the endpoints
 This applications uses JSON Web Token (JWT) to handle authentication. The token is passed with each request using the `Authorization` header with `Token` scheme.
 
 ----------
- 
+
+# API Documentation
+
+To read the API documentation please use this link below;
+    http://localhost:8000/api/documentation
+
+----------
+
 # Deployment
  
 Make you install deployer on your local machine. By running the following 
@@ -161,7 +168,6 @@ Ssh to the host, for example, for editing .env file:
 
 Please find the deployer documentation below here 
 - https://deployer.org/docs/7.x/getting-started
-
 
 ----------
 

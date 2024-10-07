@@ -14,7 +14,10 @@ Route::controller(RegisterController::class)->group(function() {
     Route::post('login', 'login');
 });
 
-Route::middleware('auth:sanctum')->group( function () {
-    Route::resource('staff', StaffController::class);
-    Route::post('imageUpload/{id}', [StaffController::class, 'imageUpload']);
-});
+Route::resource('staff', StaffController::class);
+Route::post('imageUpload/{id}', [StaffController::class, 'imageUpload']);
+
+// Route::middleware('auth:sanctum')->group( function () {
+//     Route::resource('staff', StaffController::class);
+//     Route::post('imageUpload/{id}', [StaffController::class, 'imageUpload']);
+// });
